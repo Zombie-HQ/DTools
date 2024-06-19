@@ -3,6 +3,7 @@ import logging
 
 from .dataPrint import data_print
 from .dataGenerate import data_generate
+from .dataCompare import data_compare
 
 parser = argparse.ArgumentParser(prog='DTool', description='Debug Tools')
 subparsers = parser.add_subparsers(help='sub-command help', dest='command')
@@ -30,6 +31,21 @@ generate_parser.add_argument('-max', type=int, default=100, help='max value, eg:
 generate_parser.add_argument('-min', type=int, default=0, help='min value, eg: -min 0')
 generate_parser.set_defaults(func=data_generate)
 
+# data compare
+compare_parser = subparsers.add_parser('compare', help='compare two binary files, eg: python -m dtool compare -b1 data1.bin -b2 data2.bin -d float32 -s 1x2x3x4')
+compare_parser.add_argument('bin_file1', help='bin file 1')
+compare_parser.add_argument('bin_file2', help='bin file 2')
+compare_parser.add_argument('-d', '--dtype', type=str, help='data type, eg: -d float32')
+compare_parser.add_argument('-s', '--shape', type=shape_to_list, help='shape, eg: -s 1x2x3x4')
+compare_parser.add_argument('-o', '--output', type=str, default='data_compare.log', help='output file path, eg: -o data_compare.log')
+compare_parser.set_defaults(func=data_compare)
+
+
+"""
+python -m dtool print -s 1x2x3x4 -d float32 -o data.bin
+python -m dtool generate -s 1x2x3x4 -d float32 -o data.bin -m random -max 100 -min 0
+python -m dtool compare data1.bin data2.bin -d float32 -s 1x2x3x4
+"""
 if __name__ == '__main__':
     args = parser.parse_args()
     # logging.basicConfig(level=logging.INFO, filename=args.output, filemode='w', format='%(message)s')
